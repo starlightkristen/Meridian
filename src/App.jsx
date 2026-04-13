@@ -12,6 +12,15 @@ import TodayHome from './pages/today/TodayHome'
 import ExerciseLog from './pages/today/ExerciseLog'
 import QRScan from './pages/today/QRScan'
 
+import MartialArtsHome from './pages/martial-arts/MartialArtsHome'
+import MuayThaiOverview from './pages/martial-arts/MuayThaiOverview'
+import KravMagaOverview from './pages/martial-arts/KravMagaOverview'
+import BJJOverview from './pages/martial-arts/BJJOverview'
+import BJJPositionalMap from './pages/martial-arts/BJJPositionalMap'
+import TechniqueDetail from './pages/martial-arts/TechniqueDetail'
+import CombinationCard from './pages/martial-arts/CombinationCard'
+import ScenarioDetail from './pages/martial-arts/ScenarioDetail'
+
 import WorkoutComplete from './pages/utility/WorkoutComplete'
 import PlateCalculator from './pages/utility/PlateCalculator'
 
@@ -26,6 +35,15 @@ export default function App() {
         <Route path="/discover/goal" element={<ByGoal />} />
         <Route path="/discover/type" element={<ByWorkoutType />} />
         <Route path="/discover/equipment" element={<ByEquipment />} />
+
+        <Route path="/discover/martial-arts" element={<MartialArtsHome />} />
+        <Route path="/discover/martial-arts/muay-thai" element={<MuayThaiOverview />} />
+        <Route path="/discover/martial-arts/krav-maga" element={<KravMagaOverview />} />
+        <Route path="/discover/martial-arts/bjj" element={<BJJOverview />} />
+        <Route path="/discover/martial-arts/bjj/map" element={<BJJPositionalMap />} />
+        <Route path="/discover/martial-arts/:art/technique/:id" element={<TechniqueDetail />} />
+        <Route path="/discover/martial-arts/muay-thai/combo/:id" element={<CombinationCard />} />
+        <Route path="/discover/martial-arts/krav-maga/scenario/:id" element={<ScenarioDetail />} />
 
         <Route path="/today" element={<TodayGym />} />
         <Route path="/today/home" element={<TodayHome />} />
