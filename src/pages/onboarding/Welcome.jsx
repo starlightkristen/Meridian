@@ -1,12 +1,17 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { signIn } from '../../lib/auth'
+import { useAuth } from '../../hooks/useAuth'
 
 export default function Welcome() {
   const navigate = useNavigate()
+  const { user, loading } = useAuth()
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [error, setError] = useState(null)
+
+  // Already signed in — skip the form, drop straight into the app.
+  if (!loading && user) return <Navigate to="/today" replace />
 
   const handleSendLink = async (e) => {
     e.preventDefault()

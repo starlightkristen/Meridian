@@ -110,21 +110,16 @@ function AppRoutes() {
 
 function AppShell() {
   const { pathname } = useLocation()
-  const { user, profile, loading } = useAuth()
+  const { user, loading } = useAuth()
 
   const isOnboarding = pathname.startsWith('/onboarding')
 
   if (loading) return <FullScreenSpinner />
 
-  // Not signed in → funnel to onboarding Welcome
+  // Only unauthenticated users are funneled to sign-in (Welcome lives at /onboarding).
+  // Profile/schedule are optional — users can skip setup and fill it in later from Settings.
   if (!user && !isOnboarding) {
     return <Navigate to="/onboarding" replace />
-  }
-
-  // Signed in without a saved profile → finish onboarding from Goals
-  // (Welcome is fine; the first real step is Goals.)
-  if (user && !profile && !isOnboarding) {
-    return <Navigate to="/onboarding/goals" replace />
   }
 
   return (
