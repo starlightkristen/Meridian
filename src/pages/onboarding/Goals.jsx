@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import OnboardingStep from './OnboardingStep'
-import { saveUserProfile } from '../../lib/stubs'
 
 const OPTIONS = [
   { id: 'build_muscle', emoji: '💪', name: 'Build Muscle', sub: 'Strength & size' },
@@ -12,7 +11,11 @@ const OPTIONS = [
 
 export default function Goals() {
   const navigate = useNavigate()
-  const [picked, setPicked] = useState(new Set(['build_muscle', 'lose_fat']))
+  const location = useLocation()
+  const prior = location.state ?? {}
+  const [picked, setPicked] = useState(
+    new Set(prior.goals ?? ['build_muscle', 'lose_fat']),
+  )
 
   const toggle = (id) => {
     setPicked((prev) => {
@@ -23,9 +26,10 @@ export default function Goals() {
     })
   }
 
-  const handleNext = async () => {
-    await saveUserProfile({ goals: [...picked] })
-    navigate('/onboarding/schedule')
+  const handleNext = () => {
+    navigate('/onboarding/schedule', {
+      state: { ...prior, goals: [...picked] },
+    })
   }
 
   return (

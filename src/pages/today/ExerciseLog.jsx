@@ -38,7 +38,16 @@ export default function ExerciseLog() {
   }
 
   const handleNext = async () => {
-    await saveLogs({ exercise_id: id, sets })
+    const rows = sets
+      .filter((s) => s.done && s.weight != null)
+      .map((s, idx) => ({
+        exercise_id: id,
+        exercise_name: exercise?.name ?? null,
+        set_number: idx + 1,
+        weight_lbs: s.weight,
+        reps: s.reps,
+      }))
+    if (rows.length > 0) await saveLogs(rows)
     navigate('/today/complete')
   }
 

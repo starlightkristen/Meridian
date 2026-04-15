@@ -1,5 +1,7 @@
+import { useNavigate } from 'react-router-dom'
 import ScreenWrapper from '../../components/layout/ScreenWrapper'
 import PageHeader from '../../components/layout/PageHeader'
+import { signOut } from '../../lib/auth'
 
 const SCHEDULE = [
   { day: 'Monday', routine: 'Pull Day' },
@@ -49,6 +51,13 @@ function Row({ label }) {
 }
 
 export default function Settings() {
+  const navigate = useNavigate()
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/onboarding')
+  }
+
   return (
     <ScreenWrapper>
       <PageHeader title="Settings" />
@@ -73,6 +82,7 @@ export default function Settings() {
 
         <button
           type="button"
+          onClick={handleSignOut}
           className="mt-6 w-full h-12 rounded-card text-[14px] font-medium"
           style={{ background: 'var(--red-dim)', color: 'var(--red)' }}
         >

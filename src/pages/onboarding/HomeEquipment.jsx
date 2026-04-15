@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import OnboardingStep from './OnboardingStep'
-import { saveUserProfile } from '../../lib/stubs'
 
 const OPTIONS = [
   { id: 'barbell', emoji: '🏋️', name: 'Barbell + Plates', sub: 'Heavy compound lifts' },
@@ -12,7 +11,11 @@ const OPTIONS = [
 
 export default function HomeEquipment() {
   const navigate = useNavigate()
-  const [picked, setPicked] = useState(new Set(['barbell', 'dumbbells', 'bodyweight']))
+  const location = useLocation()
+  const prior = location.state ?? {}
+  const [picked, setPicked] = useState(
+    new Set(prior.equipment ?? ['barbell', 'dumbbells', 'bodyweight']),
+  )
 
   const toggle = (id) => {
     setPicked((prev) => {
@@ -23,9 +26,10 @@ export default function HomeEquipment() {
     })
   }
 
-  const handleNext = async () => {
-    await saveUserProfile({ home_equipment: [...picked] })
-    navigate('/onboarding/gym')
+  const handleNext = () => {
+    navigate('/onboarding/gym', {
+      state: { ...prior, equipment: [...picked] },
+    })
   }
 
   return (

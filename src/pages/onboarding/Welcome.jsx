@@ -1,7 +1,29 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { signIn } from '../../lib/auth'
 
 export default function Welcome() {
   const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const [error, setError] = useState(null)
+
+  const handleSendLink = async (e) => {
+    e.preventDefault()
+    if (!email || status === 'sending') return
+    setStatus('sending')
+    setError(null)
+    const { error: err } = await signIn(email.trim())
+    if (err) {
+      setError(err.message || 'Something went wrong')
+      setStatus('error')
+    } else {
+      setStatus('sent')
+    }
+  }
+
+  const handleStart = () => navigate('/onboarding/goals')
+
   return (
     <div
       className="min-h-screen w-full max-w-[390px] mx-auto flex flex-col"
@@ -21,17 +43,56 @@ export default function Welcome() {
       </div>
 
       <div className="px-5 pb-10">
-        <button
-          type="button"
-          onClick={() => navigate('/onboarding/goals')}
-          className="w-full h-[52px] rounded-card font-bold text-[16px]"
-          style={{ background: 'var(--cyan)', color: 'var(--bg)' }}
-        >
-          Get Started
-        </button>
-        <p className="mt-4 text-center text-[13px]" style={{ color: 'var(--text-sub)' }}>
-          Already have an account? <span style={{ color: 'var(--cyan)' }}>Sign in</span>
-        </p>
+        {status === 'sent' ? (
+          <div
+            className="rounded-card p-4 text-center"
+            style={{ background: 'var(--green-dim)', color: 'var(--green)' }}
+          >
+            <p className="text-[15px] font-bold">Check your email</p>
+            <p className="mt-1 text-[12px]" style={{ color: 'var(--text-sub)' }}>
+              We sent a magic link to {email}
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSendLink} className="flex flex-col gap-3">
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+              inputMode="email"
+              className="rounded-card h-12 px-4 text-[14px] outline-none"
+              style={{
+                background: 'var(--surface)',
+                color: 'var(--text)',
+                border: '1px solid transparent',
+              }}
+            />
+            <button
+              type="submit"
+              disabled={status === 'sending' || !email}
+              className="w-full h-[52px] rounded-card font-bold text-[16px] disabled:opacity-60"
+              style={{ background: 'var(--cyan)', color: 'var(--bg)' }}
+            >
+              {status === 'sending' ? 'Sending...' : 'Send Magic Link'}
+            </button>
+            {error && (
+              <p className="text-[12px] text-center" style={{ color: 'var(--red)' }}>
+                {error}
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={handleStart}
+              className="mt-1 text-[13px]"
+              style={{ color: 'var(--text-sub)' }}
+            >
+              Already signed in? <span style={{ color: 'var(--cyan)' }}>Continue setup</span>
+            </button>
+          </form>
+        )}
       </div>
     </div>
   )

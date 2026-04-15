@@ -1,5 +1,7 @@
+import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ScreenWrapper from '../../components/layout/ScreenWrapper'
+import { saveWorkoutSession } from '../../lib/stubs'
 
 const STATS = [
   { value: '4,200 lbs', label: 'Volume' },
@@ -9,6 +11,21 @@ const STATS = [
 
 export default function WorkoutComplete() {
   const navigate = useNavigate()
+  const saved = useRef(false)
+
+  useEffect(() => {
+    if (saved.current) return
+    saved.current = true
+    saveWorkoutSession({
+      routine_type: 'push',
+      location: 'gym',
+      duration_minutes: 42,
+      exercises_completed: 6,
+      total_volume_lbs: 4200,
+      prs_hit: [],
+    })
+  }, [])
+
   return (
     <ScreenWrapper>
       <div className="pt-20 pb-8 text-center">
